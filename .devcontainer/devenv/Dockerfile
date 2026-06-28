@@ -10,6 +10,7 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
     git \
     openssh-client \
     make \
+    bash-completion \
     ;
 
 # when ubuntu is not exists create ubuntu user
@@ -19,5 +20,7 @@ RUN user=ubuntu; \
         useradd -m -G sudo -s /bin/bash -u 1000 "$user"; \
     fi; \
     echo ubuntu:ubuntu | chpasswd
+
+ENV GIT_COMPLETION_SHOW_ALL=1
 
 # USER ubuntu
