@@ -13,6 +13,29 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
     bash-completion \
     ;
 
+# install from not apt packages
+RUN export DEBIAN_FRONTEND=noninteractive; \
+    # Define tempolary packages for setup.
+    # curl and avoid error in curl packages (locales-all and ca-certificates).
+    PKGS_FOR_SETUP_CONTAINER=( \
+        curl \
+        locales-all \
+    ); \
+    # install tempolary pacakges for setup.
+    apt-get update && apt-get install -y --no-install-recommends \
+        ca-certificates \
+        ${PKGS_FOR_SETUP_CONTAINER[@]}; \
+    # update repository list for nodejs
+    curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -; \
+    apt-get update && apt-get install -y --no-install-recommends \
+        nodejs \
+        ; \
+    # remove templary packages for setup.
+    apt remove --purge -y \
+        ${PKGS_FOR_SETUP_CONTAINER[@]}; \
+    apt autopurge -y; \
+    :;
+
 # when ubuntu is not exists create ubuntu user
 # Ubuntu 24.04 or later built in user ubuntu(uid=1000,gid=1000).
 RUN user=ubuntu; \
